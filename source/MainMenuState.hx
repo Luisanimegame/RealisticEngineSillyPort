@@ -116,7 +116,7 @@ class MainMenuState extends MusicBeatState {
 
 		FlxG.camera.follow(camFollowPoint, null, 0.06);
 
-		vanillaVersion = new FlxText(775, 0, FlxG.height - 24, "v0.4.1 Modified FNF - v0.1.2 Pit Update Realistic Engine", 12);
+		vanillaVersion = new FlxText(775, 0, FlxG.height - 24, "v0.4.1 Modified FNF - v0.1.2 Pit Update Realistic Engine Gabo Port", 12);
 		vanillaVersion.scrollFactor.set();
 		vanillaVersion.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(vanillaVersion);

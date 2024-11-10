@@ -112,7 +112,7 @@ class FreeplayState extends MusicBeatState {
 		var swag:Alphabet = new Alphabet(1, 0, "swag");
 		
 		#if mobile
-        addVirtualPad(LEFT_FULL, B);
+        addVirtualPad(LEFT_FULL, A_B_C);
         #end
 
 		super.create();
@@ -221,19 +221,7 @@ class FreeplayState extends MusicBeatState {
 		if (controls.BACK)
 			FlxG.switchState(new MainMenuState());
 			
-		#if mobile
-                var justTouched:Bool = false;
-
-		for (touch in FlxG.touches.list)
-		{
-			if (touch.justPressed)
-			{
-				justTouched = true;
-			}
-		}
-		#end
-
-		if (accepted #if mobile || justTouched #end) {
+		if (accepted) {
 			var poop:String = Highscore.formatSong(songs[curSelected].songName.toLowerCase(), curDifficulty);
 
 			trace(poop);

@@ -271,6 +271,16 @@ class TitleState extends MusicBeatState {
 	override function update(elapsed:Float) {
 		if(FlxG.sound.music != null)
 			Conductor.songPosition = FlxG.sound.music.time;
+			
+		#if mobile
+		for (touch in FlxG.touches.list)
+		{
+			if (touch.justPressed)
+			{
+				pressedEnter = true;
+			}
+		}
+		#end
 
 		if(FlxG.keys.justPressed.F)
 			FlxG.fullscreen = !FlxG.fullscreen;
