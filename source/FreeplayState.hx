@@ -112,7 +112,7 @@ class FreeplayState extends MusicBeatState {
 		var swag:Alphabet = new Alphabet(1, 0, "swag");
 		
 		#if mobile
-        addVirtualPad(LEFT_FULL, A_B_C);
+        addVirtualPad(LEFT_FULL, A_B);
         #end
 
 		super.create();
@@ -139,8 +139,8 @@ class FreeplayState extends MusicBeatState {
 		curDifficulty += change;
 
 		if (curDifficulty < 0)
-			curDifficulty = 2;
-		if (curDifficulty > 2)
+			curDifficulty = 3;
+		if (curDifficulty > 3)
 			curDifficulty = 0;
 
 		intendedScore = Highscore.getScore(songs[curSelected].songName, curDifficulty);
