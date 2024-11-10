@@ -273,11 +273,13 @@ class TitleState extends MusicBeatState {
 			Conductor.songPosition = FlxG.sound.music.time;
 			
 		#if mobile
+        var justTouched:Bool = false;
+
 		for (touch in FlxG.touches.list)
 		{
 			if (touch.justPressed)
 			{
-				pressedEnter = true;
+				justTouched = true;
 			}
 		}
 		#end
@@ -293,7 +295,7 @@ class TitleState extends MusicBeatState {
 				pressedEnter = true;
 		}
 
-		if(pressedEnter && !transitioning && skippedIntro) {
+		if(pressedEnter #if mobile || justTouched #end && !transitioning && skippedIntro) {
 			titleText.animation.play('press');
 
 			FlxG.camera.flash(FlxColor.WHITE, 1);
@@ -306,7 +308,7 @@ class TitleState extends MusicBeatState {
 			});
 		}
 
-		if(pressedEnter && !skippedIntro)
+		if(pressedEnter #if mobile || justTouched #end && !skippedIntro)
 			skipIntro();
 
 		super.update(elapsed);
