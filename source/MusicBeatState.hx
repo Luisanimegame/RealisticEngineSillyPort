@@ -2,6 +2,8 @@ package;
 
 import Conductor.BPMChangeEvent;
 import flixel.addons.ui.FlxUIState;
+import flixel.FlxG;
+import flixel.FlxCamera;
 
 #if mobile
 import mobile.MobileControls;
