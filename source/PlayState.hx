@@ -764,6 +764,10 @@ class PlayState extends MusicBeatState {
 		scoreTxt.cameras = [camHUD];
 		realisticWatermark.cameras = [camHUD];
 		doof.cameras = [camHUD];
+		
+		#if mobile
+		addMobileControls();
+		#end
 
 		startingSong = true;
 
@@ -1916,6 +1920,10 @@ class PlayState extends MusicBeatState {
 
 	function startCountdown():Void {
 		inCutscene = false;
+		
+		#if mobile
+		mobileControls.visible = true;
+		#end
 
 		generateStaticArrows(0);
 		generateStaticArrows(1);
@@ -2151,7 +2159,7 @@ class PlayState extends MusicBeatState {
 
 		// -- UI
 
-		if(FlxG.keys.justPressed.ENTER && startedCountdown && canPause) {
+		if(FlxG.keys.justPressed.ENTER #if android || FlxG.android.justReleased.BACK #end && startedCountdown && canPause) {
 			persistentUpdate = false;
 			persistentDraw = true;
 			paused = true;

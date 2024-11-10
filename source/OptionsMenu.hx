@@ -148,6 +148,10 @@ class OptionsMenu extends MusicBeatState {
 		transIn = FlxTransitionableState.defaultTransIn; //Transición de entrada por defecto
 		transOut = FlxTransitionableState.defaultTransOut; //Transición de salida por defecto
 
+		#if mobile
+		addVirtualPad(LEFT_FULL, A_B_C);
+		#end
+
 		super.create();//Llama a la función de creare del padre
 	}
 
@@ -330,6 +334,13 @@ class OptionsMenu extends MusicBeatState {
 	
 			if (controls.DOWN_P)
 				changeSelection(1); // Cambia la pestaña hacia adelante
+				
+			#if mobile
+			if (virtualPad.buttonC.justPressed) {
+			  removeVirtualPad();
+			  openSubState(new mobile.MobileControlsSubState());
+			}
+			#end
 	
 			if (controls.ACCEPT) {
 				switch(curTab) {

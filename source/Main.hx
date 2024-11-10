@@ -62,7 +62,7 @@ class Main extends Sprite {
 			addChild(new FlxGame(gameInfo.width, gameInfo.height, gameInfo.initialState, gameInfo.framerate, gameInfo.framerate, gameInfo.skipSplash, gameInfo.startFullscreen));
 		#end
 
-		#if !mobile
+		#if !windows
 			addChild(new FPS(10, 3, 0xFFFFFF));
 		#end
 

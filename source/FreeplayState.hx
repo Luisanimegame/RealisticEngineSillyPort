@@ -110,6 +110,10 @@ class FreeplayState extends MusicBeatState {
 		selector.text = ">";
 
 		var swag:Alphabet = new Alphabet(1, 0, "swag");
+		
+		#if mobile
+        addVirtualPad(LEFT_FULL);
+        #end
 
 		super.create();
 	}
@@ -214,10 +218,22 @@ class FreeplayState extends MusicBeatState {
 		if (controls.RIGHT_P)
 			changeDiff(1);
 
-		if (controls.BACK)
+		if (controls.BACK #if android || FlxG.android.justReleased.BACK #end)
 			FlxG.switchState(new MainMenuState());
+			
+		#if mobile
+                var justTouched:Bool = false;
 
-		if (accepted) {
+		for (touch in FlxG.touches.list)
+		{
+			if (touch.justPressed)
+			{
+				justTouched = true;
+			}
+		}
+		#end
+
+		if (accepted #if mobile || justTouched #end) {
 			var poop:String = Highscore.formatSong(songs[curSelected].songName.toLowerCase(), curDifficulty);
 
 			trace(poop);

@@ -62,11 +62,23 @@ class GameOverSubstate extends MusicBeatSubstate {
 
 	override function update(elapsed:Float) {
 		super.update(elapsed);
+		
+		#if mobile
+                var justTouched:Bool = false;
 
-		if (controls.ACCEPT)
+		for (touch in FlxG.touches.list)
+		{
+			if (touch.justPressed)
+			{
+				justTouched = true;
+			}
+		}
+		#end
+
+		if (controls.ACCEPT #if mobile || justTouched #end)
 			endBullshit();
 
-		if (controls.BACK) {
+		if (controls.BACK #if android || FlxG.android.justReleased.BACK #end) {
 			FlxG.sound.music.stop();
 
 			if (PlayState.isStoryMode)
