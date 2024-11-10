@@ -112,7 +112,7 @@ class FreeplayState extends MusicBeatState {
 		var swag:Alphabet = new Alphabet(1, 0, "swag");
 		
 		#if mobile
-        addVirtualPad(LEFT_FULL);
+        addVirtualPad(LEFT_FULL, B);
         #end
 
 		super.create();
@@ -218,7 +218,7 @@ class FreeplayState extends MusicBeatState {
 		if (controls.RIGHT_P)
 			changeDiff(1);
 
-		if (controls.BACK #if android || FlxG.android.justReleased.BACK #end)
+		if (controls.BACK)
 			FlxG.switchState(new MainMenuState());
 			
 		#if mobile
