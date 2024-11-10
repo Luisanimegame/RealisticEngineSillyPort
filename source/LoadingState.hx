@@ -48,46 +48,6 @@ class LoadingState extends MusicBeatState {
 		funkayBar = new FlxSprite(0, FlxG.height - 20).makeGraphic(FlxG.width, 10, 0xFFFF16D2);
 		add(funkayBar);
 		funkayBar.screenCenter(X);
-
-		initSongsManifest().onComplete (
-			function (lib) {
-				callbacks = new MultiCallback(onLoad);
-				var introComplete = callbacks.add("introComplete");
-
-				checkLoadSong(getSongPath());
-				if (PlayState.SONG.needsVoices)
-					checkLoadSong(getVocalPath());
-
-				checkLibrary("shared");
-				if (PlayState.storyWeek > 1 && PlayState.storyWeek < 7)
-					checkLibrary("week" + PlayState.storyWeek);
-
-				FlxG.camera.fade(FlxG.camera.bgColor, 0.5, true);
-				new FlxTimer().start(1.5, function(_) introComplete());
-			}
-		);
-	}
-
-	function checkLoadSong(path:String) {
-		if (!Assets.cache.hasSound(path)) {
-			var library = Assets.getLibrary("songs");
-			final symbolPath = path.split(":").pop();
-
-			var callback = callbacks.add("song:" + path);
-			Assets.loadSound(path).onComplete(function (_) { callback(); });
-		}
-	}
-
-	function checkLibrary(library:String) {
-		trace(Assets.hasLibrary(library));
-		if (Assets.getLibrary(library) == null) {
-			@:privateAccess
-			if (!LimeAssets.libraryPaths.exists(library))
-				throw "Missing library: " + library;
-
-			var callback = callbacks.add("library:" + library);
-			Assets.loadLibrary(library).onComplete(function (_) { callback(); });
-		}
 	}
 
 	override function update(elapsed:Float) {
@@ -133,6 +93,7 @@ class LoadingState extends MusicBeatState {
 
 	static function getNextState(targetState:FlxState, stopMusic = false):FlxState {
 		var loaded:Bool;
+		#if NO_PRELOAD_ALL
 		if(PlayState.storyWeek > 1 && PlayState.storyWeek < 7) {
 			Paths.setCurrentLevel("week" + PlayState.storyWeek);
 			loaded = isSoundLoaded(getSongPath()) && (!PlayState.SONG.needsVoices || isSoundLoaded(getVocalPath())) && isLibraryLoaded("week" + PlayState.storyWeek) && isLibraryLoaded("shared");
@@ -143,19 +104,11 @@ class LoadingState extends MusicBeatState {
 
 		if (!loaded)
 			return new LoadingState(targetState, stopMusic);
-
+		#end
 		if (stopMusic && FlxG.sound.music != null)
 			FlxG.sound.music.stop();
 
 		return targetState;
-	}
-
-	static function isSoundLoaded(path:String):Bool {
-		return Assets.cache.hasSound(path);
-	}
-
-	static function isLibraryLoaded(library:String):Bool {
-		return Assets.getLibrary(library) != null;
 	}
 
 	override function destroy() {
@@ -163,58 +116,6 @@ class LoadingState extends MusicBeatState {
 
 		callbacks = null;
 	}
-
-	static function initSongsManifest() {
-		var id = "songs";
-		var promise = new Promise<AssetLibrary>();
-
-		var library = LimeAssets.getLibrary(id);
-
-		if (library != null)
-			return Future.withValue(library);
-
-		var path = id;
-		var rootPath = null;
-
-		@:privateAccess
-		var libraryPaths = LimeAssets.libraryPaths;
-		if (libraryPaths.exists(id)) {
-			path = libraryPaths[id];
-			rootPath = Path.directory(path);
-		} else {
-			if (StringTools.endsWith(path, ".bundle")) {
-				rootPath = path;
-				path += "/library.json";
-			} else {
-				rootPath = Path.directory(path);
-			}
-			@:privateAccess
-			path = LimeAssets.__cacheBreak(path);
-		}
-
-		AssetManifest.loadFromFile(path, rootPath).onComplete(function(manifest) {
-			if (manifest == null) {
-				promise.error("Cannot parse asset manifest for library \"" + id + "\"");
-				return;
-			}
-
-			var library = AssetLibrary.fromManifest(manifest);
-
-			if (library == null) {
-				promise.error("Cannot open library \"" + id + "\"");
-			} else {
-				@:privateAccess
-				LimeAssets.libraries.set(id, library);
-				library.onChange.add(LimeAssets.onChange.dispatch);
-				promise.completeWith(Future.withValue(library));
-			}
-		}).onError(function(_) {
-			promise.error("There is no asset library with an ID of \"" + id + "\"");
-		});
-
-		return promise.future;
-	}
-}
 
 class MultiCallback {
 	public var callback:Void->Void;
